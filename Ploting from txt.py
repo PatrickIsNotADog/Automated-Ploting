@@ -15,7 +15,7 @@ import os
 
 #Read multiple files
 #use glob to search files
-files = sorted(glob('./Documents/Spectrum/OCS_Grosch_2015/*.txt'))
+files = sorted(glob('./path/*.txt'))   #search all txt files under this path
 print(files)
 
 #Create a folder to save figures
@@ -28,7 +28,7 @@ for i in range(len(files)):
     fig = plt.figure()
     sub = fig.add_subplot(111)
     
-    df = np.loadtxt(files[i])
+    df = np.loadtxt(files[i]) 
     
     x = df[:,0]
     y = df[:,1]
