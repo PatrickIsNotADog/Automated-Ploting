@@ -230,12 +230,36 @@ Xsec_6['Xsec_6'] = Xsec_6['Xsec_6'].map(lambda x: -ln(x)/Col_Den_6)
 ### Xsec txt output
 if not os.path.exists('./Xsec_Output'):
     os.mkdir('./Xsec_Output')
-Xsec_1.to_csv('./Xsec_Output/Xsec_1.txt', sep='\t', index=False, header=False)
-Xsec_2.to_csv('./Xsec_Output/Xsec_2.txt', sep='\t', index=False, header=False)
-Xsec_3.to_csv('./Xsec_Output/Xsec_3.txt', sep='\t', index=False, header=False)
-Xsec_4.to_csv('./Xsec_Output/Xsec_4.txt', sep='\t', index=False, header=False)
-Xsec_5.to_csv('./Xsec_Output/Xsec_5.txt', sep='\t', index=False, header=False)
-Xsec_6.to_csv('./Xsec_Output/Xsec_6.txt', sep='\t', index=False, header=False)
+Xsec_1.to_csv('./Xsec_Output/Xsec_1.txt', sep='\t', index=False, header=True)
+Xsec_2.to_csv('./Xsec_Output/Xsec_2.txt', sep='\t', index=False, header=True)
+Xsec_3.to_csv('./Xsec_Output/Xsec_3.txt', sep='\t', index=False, header=True)
+Xsec_4.to_csv('./Xsec_Output/Xsec_4.txt', sep='\t', index=False, header=True)
+Xsec_5.to_csv('./Xsec_Output/Xsec_5.txt', sep='\t', index=False, header=True)
+Xsec_6.to_csv('./Xsec_Output/Xsec_6.txt', sep='\t', index=False, header=True)
+
+
+### Average Xsec
+Xsec_0 = pd.read_csv('./RawData/Xsec_0.txt', delimiter='\t', index_col=0, header=0)
+Xsec_0[:] = np.nan
+#print(Xsec_0)
+Xsec_1 = pd.read_csv('./Xsec_Output/Xsec_1.txt', delimiter='\t', index_col=0, header=0)
+Xsec_2 = pd.read_csv('./Xsec_Output/Xsec_2.txt', delimiter='\t', index_col=0, header=0)
+Xsec_3 = pd.read_csv('./Xsec_Output/Xsec_3.txt', delimiter='\t', index_col=0, header=0)
+Xsec_4 = pd.read_csv('./Xsec_Output/Xsec_4.txt', delimiter='\t', index_col=0, header=0)
+Xsec_5 = pd.read_csv('./Xsec_Output/Xsec_5.txt', delimiter='\t', index_col=0, header=0)
+Xsec_6 = pd.read_csv('./Xsec_Output/Xsec_6.txt', delimiter='\t', index_col=0, header=0)
+#print(Xsec_1)
+Xsec = Xsec_0.join(Xsec_1).join(Xsec_2).join(Xsec_3).join(Xsec_4).join(Xsec_5).join(Xsec_6)
+#print(Xsec)
+temp = Xsec[['Xsec_1', 'Xsec_2', 'Xsec_3', 'Xsec_4', 'Xsec_5', 'Xsec_6']]
+Xsec['Xsec_Ave'] = temp.mean(axis=1)
+Xsec['STTDEV_Xsec_Ave'] = temp.std(axis=1, ddof=1, skipna=np.NaN)
+#print(Xsec)
+Xsec_Ave = pd.DataFrame(Xsec, columns=['Xsec_Ave', 'STTDEV_Xsec_Ave'])
+#print(Xsec_Ave)
+if not os.path.exists('./Xsec_Ave'):
+    os.mkdir('./Xsec_Ave')
+Xsec_Ave.to_csv('./Xsec_Ave/Xsec_Ave.txt', sep='\t', index=True, header=True)
 
 
 ### PLOTTING
@@ -252,7 +276,7 @@ for i in range(len(files)):
     fig = plt.figure()
     sub = fig.add_subplot(111)
     
-    df = np.loadtxt(files[i]) 
+    df = np.loadtxt(files[i], skiprows=1) 
     
     x = df[:,0]
     y = df[:,1]
